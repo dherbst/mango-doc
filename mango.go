@@ -1,18 +1,18 @@
 // Create a man page from a Go package's source file's documentation.
 //
-//Mango generates man files from the source of a Go package.
+//Mango-Doc generates man files from the source of a Go package.
 //If the package is main, it creates a section 1 man page.
 //Otherwise, it creates a section 3 man page.
 //
-//Mango is a tool similar to godoc(1) and uses the same conventions and
+//Mango-Doc is a tool similar to godoc(1) and uses the same conventions and
 //information so that documentation will look the same in both.
-//Further, Mango uses no special markup.
+//Further, Mango-Doc uses no special markup.
 //The text is formatted by simple rules, described in FORMATTING below.
 //The input is the comments and AST of the Go package.
 //The output is raw troff markup (compatiable with nroff and groff) dumped
 //to stdout for pipelining, see EXAMPLES.
 //
-//For section 1 man pages, Mango bases the OPTIONS section on the use of flag(3)
+//For section 1 man pages, Mango-Doc bases the OPTIONS section on the use of flag(3)
 //and a special comment. It takes
 //	var file = flag.String("source", "", "Set source file")
 //	var toggle = flag.Bool("t", false, "Toggle mode")
@@ -28,27 +28,27 @@
 //	//Usage: %name %flags [optional-arg] required-arg
 //The "Usage:" part is mandatory.
 //%name and %flags (or %flag) exist only to make the intent clear to a
-//reader unfamiliar with mango(1).
+//reader unfamiliar with mango-doc(1).
 //Both may be used together, each may be used separately, and neither are
 //required.
 //
 //EXAMPLES
 //
 //Format package in current directory with nroff:
-//	mango | nroff -man > name.section
+//	mango-doc | nroff -man > name.section
 //
 //Format package in current directory as a ps file with groff:
-//	mango | groff -man > name.section.ps
+//	mango-doc | groff -man > name.section.ps
 //
 //Format package in current directory as a pdf:
-//	mango | groff -man | ps2pdf - name.section.pdf
+//	mango-doc | groff -man | ps2pdf - name.section.pdf
 //
 //Format ogle(3), and ogle(1), which exist in the same directory:
-//	mango $GOROOT/src/pkg/exp/ogle | nroff -man > ogle.3
-//	mango -package main $GOROOT/src/pkg/exp/ogle | nroff -man > ogle.1
+//	mango-doc $GOROOT/src/pkg/exp/ogle | nroff -man > ogle.3
+//	mango-doc -package main $GOROOT/src/pkg/exp/ogle | nroff -man > ogle.1
 //
 //Format your package in a makefile:
-//	mango -import $TARG $GOFILES | nroff -man > name.section
+//	mango-doc -import $TARG $GOFILES | nroff -man > name.section
 //
 //FORMATTING
 //
@@ -69,12 +69,12 @@
 //
 //HEURISTICS
 //
-//If no directory or files are specified, Mango uses the current working
+//If no directory or files are specified, Mango-Doc uses the current working
 //directory.
 //If there are multiple packages in the input directory, any package named
 //'documentation' is used as the package level documentation.
 //If there is no 'documentation' package or there are still multiple packages
-//after taking 'documentation' out of play, Mango will use the package with the
+//after taking 'documentation' out of play, Mango-Doc will use the package with the
 //same name as the input directory.
 //If this is incorrect, or you wish to generate man pages for multiple packages
 //in one directory you can select them individually with the -package flag.
@@ -86,7 +86,7 @@
 //For man 3 pages, the import path defaults to the name of the package.
 //It can be overridden with the -import flag and the
 //
-//If the -version flag is not used, Mango searches the AST for a const or var
+//If the -version flag is not used, Mango-Doc searches the AST for a const or var
 //declaration named Version.
 //Failing that, it uses today's date as the version.
 //
@@ -137,7 +137,7 @@ You cannot override SYNOPSIS, OPTIONS, BUGS or SEE ALSO.`)
 	Includes = flag.String("include", "",
 		`Generate sections from a comma-seperated list of filenames. Each section will
 be named after the file name that contains it (_ will be replaced by a space).
-The contents of each file will be included as-is. To let mango do the formatting
+The contents of each file will be included as-is. To let mango-doc do the formatting
 use -section.`)
 )
 
@@ -168,7 +168,7 @@ func usage(err interface{}) {
 	if err != nil {
 		stderr(err)
 	}
-	stderr("mango [flags] [package-directory|package-files]\nflags:")
+	stderr("mango-doc [flags] [package-directory|package-files]\nflags:")
 	flag.PrintDefaults()
 	os.Exit(1)
 }
@@ -267,7 +267,7 @@ func main() {
 		}
 	} else if flag.NArg() > 1 {
 		//more than one args we assume is multiple files so we can do
-		//mango -import $TARG $GOFILES
+		//mango-doc -import $TARG $GOFILES
 		//in make files
 		files = flag.Args()
 		for i, file := range files {
