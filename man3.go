@@ -392,7 +392,7 @@ func typesig(m *M, e interface{}) {
 func typesigs(e interface{}) string {
 	m := Formatter()
 	typesigi(m, e, true)
-	return string(m.Bytes())
+	return m.String()
 }
 
 func typesigi(m *F, e interface{}, embedded bool) {

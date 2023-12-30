@@ -108,7 +108,6 @@ import (
 	"go/doc"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -174,7 +173,6 @@ func usage(err interface{}) {
 }
 
 var suff = strings.HasSuffix
-var pref = strings.HasPrefix
 
 func filter(fi os.FileInfo) bool {
 	notdir := !fi.IsDir()
@@ -192,6 +190,9 @@ func ParseFiles(fset *token.FileSet, files []string, mode parser.Mode) (pkgs map
 				pkg = &ast.Package{
 					Name:  nm,
 					Files: map[string]*ast.File{},
+				}
+				if pkgs == nil {
+					pkgs = make(map[string]*ast.Package)
 				}
 				pkgs[nm] = pkg
 			}
@@ -218,7 +219,7 @@ type pair struct {
 func csv_files(in string, disallow bool) (out []*pair) {
 	for _, fname := range strings.Split(in, ",") {
 		sname := strings.TrimSpace(fname)
-		sname = strings.ToUpper(fname)
+		sname = strings.ToUpper(sname)
 		sname = strings.Replace(sname, "_", " ", -1)
 		if disallow {
 			switch sname {
@@ -226,7 +227,7 @@ func csv_files(in string, disallow bool) (out []*pair) {
 				fatal("Cannot override SEE ALSO, BUGS, or OPTIONS")
 			}
 		}
-		bytes, err := ioutil.ReadFile(fname)
+		bytes, err := os.ReadFile(fname)
 		if err != nil {
 			fatal(err)
 		}
@@ -266,6 +267,7 @@ func main() {
 			files = []string{dir}
 		}
 	} else if flag.NArg() > 1 {
+
 		//more than one args we assume is multiple files so we can do
 		//mango-doc -import $TARG $GOFILES
 		//in make files

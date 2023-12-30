@@ -37,7 +37,7 @@ func NewManPage(pkg *ast.Package, docs *doc.Package, overd []*section) *M {
 	//break up the package document, extract a short description
 	dvec := unstring([]byte(docs.Doc))
 	var fs []byte //first sentence.
-	if dvec != nil && len(dvec) > 0 {
+	if len(dvec) > 0 {
 		if p, ok := dvec[0].([][]byte); ok && len(p) > 0 {
 			fs = p[0]
 			//if the first paragraph is one sentence, only use it in description
@@ -138,6 +138,7 @@ func flatten(docs *doc.Package, extras []string) <-chan string {
 		for _, x := range extras {
 			out <- x
 		}
+		//lint:ignore SA1019 support Bugs until removed
 		for _, bug := range docs.Bugs {
 			out <- bug
 		}
@@ -236,7 +237,7 @@ func (m *M) do_description() {
 		i = 0
 	}
 	ps := get_section(m, "", i)
-	if ps != nil && len(ps) > 0 {
+	if len(ps) > 0 {
 		m.section("DESCRIPTION")
 		m.paras(ps)
 	}
@@ -278,6 +279,7 @@ func (m *M) do_endmatter() {
 }
 
 func (m *M) do_bugs() {
+	//lint:ignore SA1019 Leave bugs in until removed
 	bs := m.docs.Bugs
 	if len(bs) > 0 {
 		m.section("BUGS")
