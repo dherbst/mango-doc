@@ -293,7 +293,7 @@ func unwrapTypeName(v ast.Expr) *ast.Ident {
 	case *ast.Ident:
 		return v
 	default:
-		panic(fmt.Errorf("unknown expression in field type name %T: %#v", v))
+		panic(fmt.Errorf("unknown expression in field type name %T: %#v", v, v))
 	}
 }
 
